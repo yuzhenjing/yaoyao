@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body>
+<div class="form-content">
+    <form id="form-salaryLog-add" class="form-horizontal">
+        <input name="deptId" type="hidden" id="treeId"/>
+        <h4 class="form-header h4">基本信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>员工姓名：</label>
+                    <div class="col-sm-8">
+                        <select id="userId" class="form-control select2-hidden-accessible" multiple="">
+                            <option th:each="user:${users}" th:value="${user.userId}" th:text="${user.userName}"
+                                    th:disabled="${user.status == '1'}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>薪资金额：</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input id="grossSalary" name="grossSalary" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4 class="form-header h4">其他信息</h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">备注：</label>
+                    <div class="col-xs-10">
+                        <textarea name="salaryMsg" autocomplete="off" maxlength="500" class="form-control"
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/select/select2.js}"></script>
+
+<script type="text/javascript">
+    var prefix = ctx + "system/salaryLog"
+    $("#form-salaryLog-add").validate({
+        rules: {
+            xxxx: {
+                required: true,
+            },
+        },
+        focusCleanup: true
+    });
+    function submitHandler() {
+        if ($.validate.form()) {
+            var data = $("#form-salaryLog-add").serializeArray();
+            var userId = $.form.selectSelects("userId");
+            data.push({"name": "userId", "value": userId});
+            $.operate.save(prefix + "/add", data);
+        }
+    }
+</script>
+</body>
+</html>

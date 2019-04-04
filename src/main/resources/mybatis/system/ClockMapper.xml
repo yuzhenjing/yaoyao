@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.clock.mapper.ClockMapper">
+    
+    <resultMap type="Clock" id="ClockResult">
+        <result property="clockId"    column="clock_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="beginTime"    column="begin_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="clockStatus"    column="clock_status"    />
+    </resultMap>
+	
+	<sql id="selectClockVo">
+        select clock_id, user_id, user_name, begin_time, end_time, clock_status from sys_clock
+    </sql>
+	
+    <select id="selectClockList" parameterType="Clock" resultMap="ClockResult">
+        <include refid="selectClockVo"/>
+        <where>  
+            <if test="clockId != null "> and clock_id = #{clockId}</if>
+             <if test="userId != null "> and user_id = #{userId}</if>
+             <if test="userName != null  and userName != '' "> and user_name = #{userName}</if>
+             <if test="beginTime != null "> and DATE_FORMAT(begin_time,'%Y%m%d') =DATE_FORMAT(#{beginTime},'%Y%m%d')</if>
+             <if test="endTime != null "> and DATE_FORMAT(end_time,'%Y%m%d') = DATE_FORMAT(#{endTime},'%Y%m%d')</if>
+             <if test="clockStatus != null  and clockStatus != '' "> and clock_status = #{clockStatus}</if>
+         </where>
+    </select>
+    
+    <select id="selectClockById" parameterType="Integer" resultMap="ClockResult">
+        <include refid="selectClockVo"/>
+        where clock_id = #{clockId}
+    </select>
+        
+    <insert id="insertClock" parameterType="Clock">
+        insert into sys_clock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="clockId != null  ">clock_id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="userName != null  and userName != ''  ">user_name,</if>
+			<if test="beginTime != null  ">begin_time,</if>
+			<if test="endTime != null  ">end_time,</if>
+			<if test="clockStatus != null  and clockStatus != ''  ">clock_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="clockId != null  ">#{clockId},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="userName != null  and userName != ''  ">#{userName},</if>
+			<if test="beginTime != null  ">#{beginTime},</if>
+			<if test="endTime != null  ">#{endTime},</if>
+			<if test="clockStatus != null  and clockStatus != ''  ">#{clockStatus},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateClock" parameterType="Clock">
+        update sys_clock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+            <if test="beginTime != null  ">begin_time = #{beginTime},</if>
+            <if test="endTime != null  ">end_time = #{endTime},</if>
+            <if test="clockStatus != null  and clockStatus != ''  ">clock_status = #{clockStatus},</if>
+        </trim>
+        where clock_id = #{clockId}
+    </update>
+
+	<delete id="deleteClockById" parameterType="Integer">
+        delete from sys_clock where clock_id = #{clockId}
+    </delete>
+	
+    <delete id="deleteClockByIds" parameterType="String">
+        delete from sys_clock where clock_id in 
+        <foreach item="clockId" collection="array" open="(" separator="," close=")">
+            #{clockId}
+        </foreach>
+    </delete>
+    
+</mapper>

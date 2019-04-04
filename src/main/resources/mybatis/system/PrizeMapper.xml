@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.prize.mapper.PrizeMapper">
+    
+    <resultMap type="Prize" id="PrizeResult">
+        <result property="prizeId"    column="prize_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="adminId"    column="admin_id"    />
+        <result property="adminName"    column="admin_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="prizeDesc"    column="prize_desc"    />
+    </resultMap>
+	
+	<sql id="selectPrizeVo">
+        select prize_id, user_id, user_name, admin_id, admin_name, create_time, update_time, prize_desc from sys_prize
+    </sql>
+	
+    <select id="selectPrizeList" parameterType="Prize" resultMap="PrizeResult">
+        <include refid="selectPrizeVo"/>
+        <where>  
+            <if test="prizeId != null "> and prize_id = #{prizeId}</if>
+             <if test="userId != null "> and user_id = #{userId}</if>
+             <if test="userName != null  and userName != '' "> and user_name = #{userName}</if>
+             <if test="adminId != null "> and admin_id = #{adminId}</if>
+             <if test="adminName != null  and adminName != '' "> and admin_name = #{adminName}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="prizeDesc != null  and prizeDesc != '' "> and prize_desc = #{prizeDesc}</if>
+         </where>
+    </select>
+    
+    <select id="selectPrizeById" parameterType="Integer" resultMap="PrizeResult">
+        <include refid="selectPrizeVo"/>
+        where prize_id = #{prizeId}
+    </select>
+        
+    <insert id="insertPrize" parameterType="Prize">
+        insert into sys_prize
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="prizeId != null  ">prize_id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="userName != null  and userName != ''  ">user_name,</if>
+			<if test="adminId != null  ">admin_id,</if>
+			<if test="adminName != null  and adminName != ''  ">admin_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="prizeDesc != null  and prizeDesc != ''  ">prize_desc,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="prizeId != null  ">#{prizeId},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="userName != null  and userName != ''  ">#{userName},</if>
+			<if test="adminId != null  ">#{adminId},</if>
+			<if test="adminName != null  and adminName != ''  ">#{adminName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="prizeDesc != null  and prizeDesc != ''  ">#{prizeDesc},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePrize" parameterType="Prize">
+        update sys_prize
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+            <if test="adminId != null  ">admin_id = #{adminId},</if>
+            <if test="adminName != null  and adminName != ''  ">admin_name = #{adminName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="prizeDesc != null  and prizeDesc != ''  ">prize_desc = #{prizeDesc},</if>
+        </trim>
+        where prize_id = #{prizeId}
+    </update>
+
+	<delete id="deletePrizeById" parameterType="Integer">
+        delete from sys_prize where prize_id = #{prizeId}
+    </delete>
+	
+    <delete id="deletePrizeByIds" parameterType="String">
+        delete from sys_prize where prize_id in 
+        <foreach item="prizeId" collection="array" open="(" separator="," close=")">
+            #{prizeId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.salarylog.mapper.SalaryLogMapper">
+    
+    <resultMap type="SalaryLog" id="SalaryLogResult">
+        <result property="salaryId"    column="salary_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="grossSalary"    column="gross_salary"    />
+        <result property="salaryMsg"    column="salary_msg"    />
+        <result property="adminId"    column="admin_id"    />
+        <result property="adminName"    column="admin_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectSalaryLogVo">
+        select salary_id, user_name, user_id, gross_salary, salary_msg, admin_id, admin_name, create_time, update_time from sys_salary_log
+    </sql>
+	
+    <select id="selectSalaryLogList" parameterType="SalaryLog" resultMap="SalaryLogResult">
+        <include refid="selectSalaryLogVo"/>
+
+        <where>  
+            <if test="salaryId != null "> and salary_id = #{salaryId}</if>
+             <if test="userName != null  and userName != '' "> and user_name = #{userName}</if>
+             <if test="userId != null "> and user_id = #{userId}</if>
+             <if test="grossSalary != null "> and gross_salary = #{grossSalary}</if>
+             <if test="salaryMsg != null  and salaryMsg != '' "> and salary_msg = #{salaryMsg}</if>
+             <if test="adminId != null "> and admin_id = #{adminId}</if>
+             <if test="adminName != null  and adminName != '' "> and admin_name = #{adminName}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+
+    </select>
+    
+    <select id="selectSalaryLogById" parameterType="Integer" resultMap="SalaryLogResult">
+        <include refid="selectSalaryLogVo"/>
+        where salary_id = #{salaryId}
+    </select>
+        
+    <insert id="insertSalaryLog" parameterType="SalaryLog" useGeneratedKeys="true" keyProperty="salaryId">
+        insert into sys_salary_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userName != null  and userName != ''  ">user_name,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="grossSalary != null  ">gross_salary,</if>
+			<if test="salaryMsg != null  and salaryMsg != ''  ">salary_msg,</if>
+			<if test="adminId != null  ">admin_id,</if>
+			<if test="adminName != null  and adminName != ''  ">admin_name,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userName != null  and userName != ''  ">#{userName},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="grossSalary != null  ">#{grossSalary},</if>
+			<if test="salaryMsg != null  and salaryMsg != ''  ">#{salaryMsg},</if>
+			<if test="adminId != null  ">#{adminId},</if>
+			<if test="adminName != null  and adminName != ''  ">#{adminName},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateSalaryLog" parameterType="SalaryLog">
+        update sys_salary_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="grossSalary != null  ">gross_salary = #{grossSalary},</if>
+            <if test="salaryMsg != null  and salaryMsg != ''  ">salary_msg = #{salaryMsg},</if>
+            <if test="adminId != null  ">admin_id = #{adminId},</if>
+            <if test="adminName != null  and adminName != ''  ">admin_name = #{adminName},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where salary_id = #{salaryId}
+    </update>
+
+	<delete id="deleteSalaryLogById" parameterType="Integer">
+        delete from sys_salary_log where salary_id = #{salaryId}
+    </delete>
+	
+    <delete id="deleteSalaryLogByIds" parameterType="String">
+        delete from sys_salary_log where salary_id in 
+        <foreach item="salaryId" collection="array" open="(" separator="," close=")">
+            #{salaryId}
+        </foreach>
+    </delete>
+    
+</mapper>

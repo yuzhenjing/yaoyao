@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.contract.mapper.ContractMapper">
+    
+    <resultMap type="Contract" id="ContractResult">
+        <result property="userId"    column="user_id"    />
+        <result property="contractName"    column="contract_name"    />
+        <result property="contractPeriod"    column="contract_period"    />
+        <result property="majorSalary"    column="major_salary"    />
+        <result property="awardSalary"    column="award_salary"    />
+        <result property="idcardUrl"    column="idcard_url"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="contractNo"    column="contract_no"    />
+        <result property="adminId"    column="admin_id"    />
+    </resultMap>
+	
+	<sql id="selectContractVo">
+        select user_id, contract_name, contract_period, major_salary, award_salary, idcard_url, create_time, update_time, contract_no, admin_id from sys_contract
+    </sql>
+	
+    <select id="selectContractList" parameterType="Contract" resultMap="ContractResult">
+        <include refid="selectContractVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+             <if test="contractName != null  and contractName != '' "> and contract_name = #{contractName}</if>
+             <if test="contractPeriod != null  and contractPeriod != '' "> and contract_period = #{contractPeriod}</if>
+             <if test="majorSalary != null "> and major_salary = #{majorSalary}</if>
+             <if test="awardSalary != null "> and award_salary = #{awardSalary}</if>
+             <if test="idcardUrl != null  and idcardUrl != '' "> and idcard_url = #{idcardUrl}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="contractNo != null  and contractNo != '' "> and contract_no = #{contractNo}</if>
+             <if test="adminId != null "> and admin_id = #{adminId}</if>
+         </where>
+    </select>
+    
+    <select id="selectContractById" parameterType="Long" resultMap="ContractResult">
+        <include refid="selectContractVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertContract" parameterType="Contract">
+        insert into sys_contract
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null  ">user_id,</if>
+			<if test="contractName != null  and contractName != ''  ">contract_name,</if>
+			<if test="contractPeriod != null  and contractPeriod != ''  ">contract_period,</if>
+			<if test="majorSalary != null  ">major_salary,</if>
+			<if test="awardSalary != null  ">award_salary,</if>
+			<if test="idcardUrl != null  and idcardUrl != ''  ">idcard_url,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="contractNo != null  and contractNo != ''  ">contract_no,</if>
+			<if test="adminId != null  ">admin_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null  ">#{userId},</if>
+			<if test="contractName != null  and contractName != ''  ">#{contractName},</if>
+			<if test="contractPeriod != null  and contractPeriod != ''  ">#{contractPeriod},</if>
+			<if test="majorSalary != null  ">#{majorSalary},</if>
+			<if test="awardSalary != null  ">#{awardSalary},</if>
+			<if test="idcardUrl != null  and idcardUrl != ''  ">#{idcardUrl},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="contractNo != null  and contractNo != ''  ">#{contractNo},</if>
+			<if test="adminId != null  ">#{adminId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateContract" parameterType="Contract">
+        update sys_contract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractName != null  and contractName != ''  ">contract_name = #{contractName},</if>
+            <if test="contractPeriod != null  and contractPeriod != ''  ">contract_period = #{contractPeriod},</if>
+            <if test="majorSalary != null  ">major_salary = #{majorSalary},</if>
+            <if test="awardSalary != null  ">award_salary = #{awardSalary},</if>
+            <if test="idcardUrl != null  and idcardUrl != ''  ">idcard_url = #{idcardUrl},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="contractNo != null  and contractNo != ''  ">contract_no = #{contractNo},</if>
+            <if test="adminId != null  ">admin_id = #{adminId},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+	<delete id="deleteContractById" parameterType="Long">
+        delete from sys_contract where user_id = #{userId}
+    </delete>
+	
+    <delete id="deleteContractByIds" parameterType="String">
+        delete from sys_contract where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+    
+</mapper>

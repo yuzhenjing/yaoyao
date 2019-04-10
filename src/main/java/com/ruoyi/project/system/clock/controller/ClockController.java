@@ -94,14 +94,15 @@ public class ClockController extends BaseController {
         clock.setUserId(sysUser.getUserId());
         clock.setUserName(sysUser.getUserName());
         //根据当前时间进行判断  如果当前时间小于12点则是打卡 否则则是下班
-        String sysTime = DateUtils.parseDateToStr("YYYYMMDD", new Date()) + "120000";
-        String beginTime = DateUtils.parseDateToStr("YYYYMMDD", new Date()) + "090000";
-        String endTime = DateUtils.parseDateToStr("YYYYMMDD", new Date()) + "180000";
+        String sysTime = DateUtils.dateTime() + "120000";
+        String beginTime = DateUtils.dateTime() + "090000";
+        String endTime = DateUtils.dateTime() + "180000";
         String currTime = DateUtils.parseDateToStr(DateUtils.YYYYMMDDHHMMSS, new Date());
-
+        //如果当前时间大于 上班时间  并且小于 中午12点  则是迟到
         if (currTime.compareTo(beginTime) > 0 && currTime.compareTo(sysTime) < 0) {
             clock.setClockStatus("迟到");
         } else if (currTime.compareTo(endTime) < 0 && currTime.compareTo(sysTime) > 0) {
+            //如果当前时间 小于下班时间 并且当前时间大于中午12点
             clock.setClockStatus("早退");
         } else {
             clock.setClockStatus("正常");
